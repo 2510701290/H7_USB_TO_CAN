@@ -1,0 +1,11 @@
+# Copyright (c) 2025 roboparty <2321901849@qq.com>
+# SPDX-License-Identifier: GPL-3.0-only
+
+# Enable MPU
+CONFIG_ARM_MPU=y
+
+# Enable HW stack protection
+CONFIG_HW_STACK_PROTECTION=y
+
+# Enable GPIO
+CONFIG_GPIO=y

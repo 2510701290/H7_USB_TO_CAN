@@ -1,0 +1,8 @@
+board:
+  name: H7_Work
+  full_name: H7_Work
+  vendor: RoboBraver
+  socs:
+    - name: stm32h723xx
+      variants:
+        - name: 'H7_Work'

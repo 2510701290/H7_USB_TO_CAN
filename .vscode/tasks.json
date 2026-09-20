@@ -1,0 +1,45 @@
+// Ctrl+Shift+P
+// Preferences: Open Keyboard Shortcuts (JSON)
+// 例：
+// [
+//   {
+//     "key": "ctrl+alt+b",
+//     "command": "workbench.action.tasks.runTask",
+//     "args": "west build (H7_Work)"
+//   },
+//   {
+//     "key": "ctrl+alt+f",
+//     "command": "workbench.action.tasks.runTask",
+//     "args": "west flash + rtt (pyocd)"
+//   }
+// ]
+
+{
+  "version": "2.0.0",
+  "tasks": [
+    {
+      "label": "west build (H7_Work)",
+      "type": "shell",
+      // 工程地址
+      "command": "west build -p always -b H7_Work ~/Zephyr_text/H7_Work",
+      "options": { "cwd": "${workspaceFolder}" },
+      "group": { "kind": "none" },
+      "problemMatcher": ["$gcc"]
+    },
+    {
+      "label": "west flash + rtt (pyocd)",
+      "type": "shell",
+      // "command": "west flash --runner pyocd && west rtt --runner pyocd",
+      "command": "west flash --runner pyocd",
+      "options": { "cwd": "${workspaceFolder}" },
+      "isBackground": true,
+      "problemMatcher": {
+        "owner": "west-rtt",
+        "pattern": { "regexp": "^$" },
+        "background": { "activeOnStart": true, "beginsPattern": "a^", "endsPattern": "a^" }
+      },
+      "group": { "kind": "none"},
+      "presentation": { "reveal": "always", "panel": "dedicated", "clear": true }
+    }
+  ]
+}

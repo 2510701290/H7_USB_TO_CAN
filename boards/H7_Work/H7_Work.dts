@@ -1,0 +1,106 @@
+/dts-v1/;
+
+#include <st/h7/stm32h723Xg.dtsi>
+#include <st/h7/stm32h723vgtx-pinctrl.dtsi>
+
+/ {
+	model = "H7_Work";
+	compatible = "candlelightfd";
+
+	chosen {
+		zephyr,sram = &sram0;
+		zephyr,flash = &flash0;
+		zephyr,canbus2 = &fdcan2;
+		zephyr,canbus3 = &fdcan3;
+	};
+
+	cannectivity: cannectivity {
+		compatible = "cannectivity";
+		timestamp-counter = <&counters2>;
+
+		channel0 {
+			compatible = "cannectivity-channel";
+			can-controller = <&fdcan2>;
+		};
+	};
+
+	gs_usb0: gs_usb0 {
+		compatible = "gs_usb";
+		label = "gs_usb";
+	};
+
+	can_loopback0: can_loopback {
+		compatible = "zephyr,can-loopback";
+		status = "okay";
+	};
+};
+
+/* Adjust the pll for a SYSTEM Clock of 480 MHz  */
+&clk_hse {
+	hse-bypass;
+	clock-frequency = <DT_FREQ_M(8)>;
+	status = "okay";
+};
+
+&pll {
+	clocks = <&clk_hse>;
+	div-m = <1>; // 8 MHz to PLL（VCO）
+	mul-n = <60>;
+	div-p = <1>; // 480 MHz to RCC
+	div-q = <10>; // 48 MHz to USB
+	div-r = <2>; // 240 MHz to UART234578
+	fracn = <0>;
+	status = "okay";
+};
+
+&pll2 {
+	clocks = <&clk_hse>;
+	div-m = <1>; // 8 MHz to PLL2（VCO）
+	mul-n = <25>;
+	div-p = <2>; // 100 MHz
+	div-q = <2>; // 100 MHz to FDCAN
+	div-r = <2>; // 100 MHz
+	fracn = <0>;
+	status = "okay";
+};
+
+&rcc {
+	clocks = <&pll>;
+	clock-frequency = <DT_FREQ_M(480)>;     /* 480 MHz SCLK*/
+	d1cpre = <1>;                           /* 480 MHz CPU Clocks*/
+	hpre = <2>;								/* 240 MHz */
+	d1ppre = <2>;							/* 120 MHz APB3 Peripheral Clock */
+	d2ppre1 = <2>;							/* 120 MHz APB1 Peripheral Clock */
+	d2ppre2 = <2>;							/* 120 MHz APB2 Peripheral Clock */
+	d3ppre = <2>;							/* 120 MHz APB4 Peripheral Clock */
+	timpre;									/* Timer Clock Prescaler */
+};
+
+zephyr_udc0: &usbotg_hs {
+	pinctrl-0 = <&usb_otg_hs_dm_pa11 &usb_otg_hs_dp_pa12>;
+	pinctrl-names = "default";
+	clocks = <&rcc STM32_CLOCK(AHB1, 25)>,
+		 <&rcc STM32_SRC_PLL1_Q USB_SEL(1)>;
+	status = "okay";
+};
+
+&fdcan2 {
+	pinctrl-0 = <&fdcan2_rx_pb12 &fdcan2_tx_pb13>;
+	pinctrl-names = "default";
+	clocks = <&rcc STM32_CLOCK(APB1_2, 8)>,
+		 <&rcc STM32_SRC_PLL2_Q FDCAN_SEL(2)>;
+	status = "okay";
+};
+
+&timers2 {
+	status = "okay";
+	st,prescaler = <239>;
+
+	counters2: counter {
+		status = "okay";
+	};
+};
+
+&pwr {
+	power-supply = "ldo";
+};

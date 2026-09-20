@@ -1,0 +1,30 @@
+{
+  "version": "0.2.0",
+  "configurations": [
+    {
+      "name": "Debug with PyOCD",
+      "type": "cortex-debug",
+      "request": "launch",
+      "servertype": "pyocd",
+      "serverpath": "/home/hjq/Env/zephyrproject/.venv/bin/pyocd",
+      "cwd": "${workspaceFolder}",
+      "executable": "${workspaceFolder}/build/zephyr/zephyr.elf",
+      "targetId": "stm32h723xx",
+
+      "gdbPath": "/home/hjq/Env/zephyr-sdk-1.0.1/gnu/arm-zephyr-eabi/bin/arm-zephyr-eabi-gdb-py",
+      "objdumpPath": "/home/hjq/Env/zephyr-sdk-1.0.1/gnu/arm-zephyr-eabi/bin/arm-zephyr-eabi-objdump",
+
+      "overrideGDBServerStartedRegex": "GDB server (listening|started) (at|on) port",
+
+      "runToEntryPoint": "main",
+      "showDevDebugOutput": "parsed",
+      "rttConfig": {
+                      "enabled": true,
+                      "address": "0x24000410",
+                      "decoders": [
+                        { "type": "console", "label": "RTT", "port": 0 }
+                      ]
+                    }
+    }
+  ]
+}

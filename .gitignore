@@ -1,0 +1,22 @@
+# ---------- Zephyr / west 构建产物（最关键的一条）----------
+# 覆盖 build/、build-h7/、build-debug/ 等任意层级，缺了它整个构建目录都会被提交
+**/build*/
+twister-out*/
+*.elf
+*.bin
+*.hex
+*.map
+
+# ---------- west 工作区相关 ----------
+.venv/
+external
+
+# ---------- 编辑器/IDE 本机配置 ----------
+.vscode/compile_commands.json
+.vscode/extensions.json
+.vscode/zephyr-ide.json
+
+# ---------- 其它生成物 ----------
+.cache/
+__pycache__/
+*.py[cod]

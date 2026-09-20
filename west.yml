@@ -1,0 +1,26 @@
+# Copyright (c) 2025 roboparty <2321901849@qq.com>
+# SPDX-License-Identifier: GPL-3.0-only
+
+manifest:
+  version: 0.13
+
+  projects:
+    - name: zephyr
+      remote: zephyrproject
+      revision: main
+      import: true
+
+    - name: cannectivity
+      remote: cannectivity
+      revision: main
+      path: custom/cannectivity
+
+  remotes:
+    - name: zephyrproject
+      url-base: https://github.com/zephyrproject-rtos
+
+    - name: cannectivity
+      url-base: https://github.com/CANnectivity
+
+  self:
+    path: samples/roboto_usb2can

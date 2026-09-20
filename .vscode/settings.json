@@ -1,0 +1,28 @@
+{
+    "terminal.integrated.defaultProfile.linux": "Zephyr IDE Terminal",
+    "C_Cpp.default.compileCommands": "${workspaceFolder}/build/compile_commands.json",
+    "C_Cpp.default.compilerPath": "/home/hjq/Env/zephyr-sdk-1.0.1/gnu/arm-zephyr-eabi/bin/arm-zephyr-eabi-gcc",
+    "C_Cpp.default.cStandard": "c11",
+    "cmake.configureOnOpen": false,
+    "cmake.buildDirectory": "${workspaceFolder}/build",
+    "cmake.configureArgs": ["-DBOARD=H7_Work"],
+
+    // ↓↓↓ 新增：给 Devicetree LSP 配置上下文 ↓↓↓
+    "devicetree.cwd": "/home/hjq/Env/zephyrproject",
+    "devicetree.defaultBindingType": "Zephyr",
+    "devicetree.defaultIncludePaths": [
+        "./zephyr/dts",
+        "./zephyr/dts/common",
+        "./zephyr/dts/arm",          // 解析 <st/h7/stm32h723Xg.dtsi>
+        "./zephyr/dts/arm64",
+        "./zephyr/dts/riscv",
+        "./zephyr/dts/vendor",
+        "./zephyr/dts/xtensa",
+        "./zephyr/include",          // 解析 <zephyr/dt-bindings/...>
+        "./modules/hal/stm32/dts"    // 解析 <st/h7/*-pinctrl.dtsi>
+    ],
+    "devicetree.defaultZephyrBindings": [
+        "./zephyr/dts/bindings",
+        "./custom/cannectivity/dts/bindings"
+    ]
+}

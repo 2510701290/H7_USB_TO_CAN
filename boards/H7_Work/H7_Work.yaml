@@ -1,0 +1,14 @@
+identifier: H7_Work/stm32h723xx/H7_Work
+name: H7_Work
+type: mcu
+arch: arm
+toolchain:
+  - zephyr
+  - gnuarmemb
+ram: 320
+flash: 1024
+supported:
+  - can
+  - gpio
+  - usb_device
+  - usbd
