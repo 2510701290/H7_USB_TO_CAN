@@ -29,13 +29,13 @@ int main(void)
 {
 	#ifdef CONFIG_USB_DEVICE_STACK_NEXT
 	const struct device *gs_usb_dev = DEVICE_DT_GET(DT_NODELABEL(gs_usb0));
-	const struct device *can_2 = DEVICE_DT_GET(DT_NODELABEL(fdcan2));
 	const struct device *can_local = DEVICE_DT_GET(DT_NODELABEL(can_loopback0));
+	const struct device *can_2 = DEVICE_DT_GET(DT_NODELABEL(fdcan2));
 	struct gs_usb_ops ops = { 0 };
 
 	const struct device *channels[] = {
+		DEVICE_DT_GET(DT_NODELABEL(can_loopback0)),
         DEVICE_DT_GET(DT_NODELABEL(fdcan2)),
-        DEVICE_DT_GET(DT_NODELABEL(can_loopback0)),
     };
     
 
