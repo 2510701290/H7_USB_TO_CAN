@@ -6,13 +6,16 @@
       "type": "cortex-debug",
       "request": "launch",
       "servertype": "pyocd",
-      "serverpath": "/home/hjq/Env/zephyrproject/.venv/bin/pyocd",
+      // 依赖环境变量 ZEPHYR_BASE / ZEPHYR_SDK_INSTALL_DIR，见 readme_cn.md「调试环境变量」
+      // pyocd 由 west 的 venv 提供，位于 west 工作区根目录：<ZEPHYR_BASE>/../.venv
+      "serverpath": "${env:ZEPHYR_BASE}/../.venv/bin/pyocd",
       "cwd": "${workspaceFolder}",
       "executable": "${workspaceFolder}/build/zephyr/zephyr.elf",
       "targetId": "stm32h723xx",
 
-      "gdbPath": "/home/hjq/Env/zephyr-sdk-1.0.1/gnu/arm-zephyr-eabi/bin/arm-zephyr-eabi-gdb-py",
-      "objdumpPath": "/home/hjq/Env/zephyr-sdk-1.0.1/gnu/arm-zephyr-eabi/bin/arm-zephyr-eabi-objdump",
+      "gdbPath": "${env:ZEPHYR_SDK_INSTALL_DIR}/gnu/arm-zephyr-eabi/bin/arm-zephyr-eabi-gdb-py",
+      // 显式给出 objdumpPath：Cortex-Debug 由 gdbPath 推导时会拼出不存在的 "...-gdb-py" 前缀
+      "objdumpPath": "${env:ZEPHYR_SDK_INSTALL_DIR}/gnu/arm-zephyr-eabi/bin/arm-zephyr-eabi-objdump",
 
       "overrideGDBServerStartedRegex": "GDB server (listening|started) (at|on) port",
 
