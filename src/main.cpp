@@ -8,10 +8,10 @@
 
 LOG_MODULE_REGISTER(main, LOG_LEVEL_INF);
 
-// K_THREAD_DEFINE(RTT_tid, 4096,
-// 				RTT_thread, 
-// 				NULL, NULL, NULL,
-// 				3, 0, 0);
+K_THREAD_DEFINE(RTT_tid, 4096,
+				RTT_thread, 
+				NULL, NULL, NULL,
+				3, 0, 0);
 
 // K_THREAD_DEFINE(CAN2_tid, 2048,
 // 				CAN2_thread, 
@@ -33,7 +33,8 @@ int main(void)
 	const struct device *can_2 = DEVICE_DT_GET(DT_NODELABEL(fdcan2));
 	struct gs_usb_ops ops = { 0 };
 
-	const struct device *channels[] = {
+	const struct device *channels[] =
+	{
 		DEVICE_DT_GET(DT_NODELABEL(can_loopback0)),
         DEVICE_DT_GET(DT_NODELABEL(fdcan2)),
     };

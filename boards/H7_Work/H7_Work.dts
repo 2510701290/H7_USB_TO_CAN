@@ -2,10 +2,15 @@
 
 #include <st/h7/stm32h723Xg.dtsi>
 #include <st/h7/stm32h723vgtx-pinctrl.dtsi>
+#include <zephyr/dt-bindings/memory-attr/memory-attr-arm.h>
 
 / {
 	model = "H7_Work";
 	compatible = "candlelightfd";
+
+	aliases {
+		rtt-custom-section = &rtt_region;
+	};
 
 	chosen {
 		zephyr,sram = &sram0;
@@ -33,6 +38,17 @@
 		compatible = "zephyr,can-loopback";
 		status = "okay";
 	};
+
+	rtt_region: memory@2404e000 {
+		compatible = "zephyr,memory-region", "mmio-sram";
+		reg = <0x2404e000 DT_SIZE_K(8)>;  /* 0x4E000 + 0x2000 = 0x50000 ✓ 正好到 AXI SRAM 末尾 */
+		zephyr,memory-region = "RTT_NOCACHE";
+		zephyr,memory-attr = <DT_MEM_ARM_MPU_RAM_NOCACHE>;
+	};
+};
+
+&sram0 {
+	reg = <0x24000000 DT_SIZE_K(312)>;
 };
 
 /* Adjust the pll for a SYSTEM Clock of 480 MHz  */

@@ -8,8 +8,8 @@
 USBD_DEVICE_DEFINE(usbd, DEVICE_DT_GET(DT_NODELABEL(zephyr_udc0)), 0x1D50, 0x606F);
 
 USBD_DESC_LANG_DEFINE(lang);
-USBD_DESC_MANUFACTURER_DEFINE(mfr, "wentywenty");
-USBD_DESC_PRODUCT_DEFINE(product, "roboto_usb2can");
+USBD_DESC_MANUFACTURER_DEFINE(mfr, "A_Shui");
+USBD_DESC_PRODUCT_DEFINE(product, "product_0");
 USBD_DESC_SERIAL_NUMBER_DEFINE(sn);
 USBD_DESC_CONFIG_DEFINE(fs_config_desc, "Full-Speed Configuration");
 USBD_CONFIGURATION_DEFINE(fs_config, 0, 250, &fs_config_desc);

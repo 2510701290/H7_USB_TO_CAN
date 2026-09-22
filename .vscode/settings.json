@@ -7,7 +7,6 @@
     "cmake.buildDirectory": "${workspaceFolder}/build",
     "cmake.configureArgs": ["-DBOARD=H7_Work"],
 
-    "devicetree.cwd": "${env:ZEPHYR_BASE}/..",
     "devicetree.defaultBindingType": "Zephyr",
     "devicetree.defaultIncludePaths": [
         "./zephyr/dts",
