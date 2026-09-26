@@ -38,7 +38,7 @@
 	clocks = <&rcc STM32_CLOCK(APB1_2, 8)>,
 		 <&rcc STM32_SRC_PLL2_Q FDCAN_SEL(2)>;
 	/*            "int0"  "int1"   "calib" */
-	interrupts = <20 -5>, <22 -5>, <63 0>;
+	interrupts = <20 0>, <22 0>, <63 0>;
 	bosch,mram-cfg = <0x350 28 8 6 0 0 3 3>;
 	status = "okay";
 };
@@ -103,7 +103,7 @@
 介绍：记录CAN设备发生接收溢出的次数
 ```
 
-## 4. CAN过滤器
+## 4. CAN过滤器和中断回调
 ```c
 /* 
         @num       @1
@@ -125,7 +125,29 @@ can_mcan_add_rx_filter();
         @num       @3
         @location: gs_usb.c
         @use:      @2 的上层调用，把一个CAN设备注册为gs_usb驱动中的一个CAN通道，并为这个CAN设备注册filter
-        @load:     1.fliter 2.callback 3.设置状态变化回调函数，设置在dev->config->callbacks->std[filt_idx].function，优先级继承can_mcan_line_1_isr()
+        @load:     1.fliter 2.callback 3.设置状态变化回调函数，将gs_usb_can_rx_callback设置在dev->config->callbacks->std[filt_idx].function，优先级继承can_mcan_line_1_isr()
 */
 gs_usb_register_channel();
+
+/* 
+        @num       @4
+        @location: gs_usb.c
+        @use:      @3 的上层调用，初始化一个gs_usb设备，并将多个CAN设备注册为gs_usb的CAN通道
+        @load:     1.初始化操作回调struct gs_usb_data *data = dev->data; data->ops就是操作回调 2.初始化多个通道
+*/
+gs_usb_register();
+
+/* 
+        @num       @5
+        @location: gs_usb.c
+        @use:      gs_usb_data data中的ops的上层调用
+        @load:     1.主机的通道模式请求的核心函数，完成后触发ops。
+                   2.主机的通道识别请求(CONFIG_USBD_GS_USB_IDENTIFICATION=N不触发ops)。
+                   3.Zephyr CAN控制器的状态变化回调，完成后触发ops。
+                   4.gs_usb驱动中的接收上传线程。它从接收FIFO中取出待发送给USB主机的帧，通过USB批量输入端点上传给主机，并在传输完成后触发ops。
+*/
+gs_usb_request_mode();
+gs_usb_request_identify();
+gs_usb_can_state_change_callback();
+gs_usb_rx_thread();
 ```
