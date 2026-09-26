@@ -1,14 +1,13 @@
 #include <K_RTT_Thread.h>
 #include <zephyr/kernel.h>
-#include <zephyr/debug/thread_analyzer.h>   // thread_analyzer_run / struct thread_analyzer_info
+#include <zephyr/debug/thread_analyzer.h>
 #include <zephyr/usb/usbd.h>
 #include <zephyr/usb/usbd_msg.h>
 #include <USB.h>
 
 LOG_MODULE_REGISTER(rtt_thread, LOG_LEVEL_INF);
 
-int LOG_INFO = 0;
-int err = 0;
+int RTT_LOG_INFO = 0;
 
 /* 每个线程调用一次；当前上下文就是 RTT_thread，所以 LOG_INF 由本模块发出 */
 static void stack_info_cb(struct thread_analyzer_info *info)

@@ -8,7 +8,7 @@ set(CMAKE_EXPORT_COMPILE_COMMANDS ON)
 find_package(Zephyr REQUIRED HINTS $ENV{ZEPHYR_BASE})
 project(H7_Work)
 
-target_sources(app PRIVATE src/main.cpp src/USB.cpp src/K_RTT_Thread.cpp src/K_CAN_Thread.cpp)
+target_sources(app PRIVATE src/main.cpp src/USB.cpp src/K_RTT_Thread.cpp src/K_CAN_Thread.cpp src/K_USB_CAN_ERR_Thread.cpp)
 
 target_include_directories(app PRIVATE ${CMAKE_CURRENT_SOURCE_DIR}/src)
 

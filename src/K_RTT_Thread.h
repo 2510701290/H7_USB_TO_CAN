@@ -5,8 +5,7 @@
 #include <zephyr/logging/log.h>
 #include <zephyr/sys/sys_io.h>
 
-extern int LOG_INFO;
-extern int err;
+extern int RTT_LOG_INFO;
 
 void RTT_thread(void *p1, void *p2, void *p3);
 

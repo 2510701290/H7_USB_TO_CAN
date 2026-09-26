@@ -105,6 +105,9 @@ zephyr_udc0: &usbotg_hs {
 	pinctrl-names = "default";
 	clocks = <&rcc STM32_CLOCK(APB1_2, 8)>,
 		 <&rcc STM32_SRC_PLL2_Q FDCAN_SEL(2)>;
+	/*            "int0"  "int1"   "calib" */
+	interrupts = <20 0>, <22 0>, <63 0>;
+	bosch,mram-cfg = <0x350 28 8 6 0 0 3 3>;
 	status = "okay";
 };
 
