@@ -73,7 +73,7 @@ west rtt --runner pyocd
 9. 上传git
 ```bash
 git add -A
-git commit -m "2026.9.28"
+git commit -m "2026.9.28_2"
 git push
 ```
 
