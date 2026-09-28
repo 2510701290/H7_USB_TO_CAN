@@ -71,9 +71,11 @@ west rtt --runner pyocd
 ```
 
 9. 上传git
+```bash
 git add -A
-git commit -m "2026.9.26"
+git commit -m "2026.9.28"
 git push
+```
 
 # 可选开启vscode配置：
 ## 插件拓展推荐
