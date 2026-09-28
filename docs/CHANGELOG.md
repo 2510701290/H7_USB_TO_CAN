@@ -19,3 +19,12 @@
 ### Changed
 - 更新了READMW.md和NOTES.md，希望对我和后来者的zephyr的开发有所帮助。
 - 删除了对上位机windows的支持，转而专注与对linux的适配。
+
+## 2026.9.28
+### Added
+- 新增了上位机主控和下位机主控电机的模式切换，并留出接口。
+- 新增了RTT命令接收，方便快速调试
+### Fixed
+- 无
+### Changed
+- 更新了readme和NOTES，增加了CAN的部分学习笔记

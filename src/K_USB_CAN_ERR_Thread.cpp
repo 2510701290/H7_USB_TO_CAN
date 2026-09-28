@@ -15,41 +15,28 @@ void USB_CAN_ERR_thread(void *p1, void *p2, void *p3)
     ARG_UNUSED(p3);
 
     
-    uint8_t err_channel = 0;
+    atomic_t USB_T_STARTED[CONFIG_USBD_GS_USB_MAX_CHANNELS],
+             USB_T_ERROR_OFF[CONFIG_USBD_GS_USB_MAX_CHANNELS],
+             USB_T_ERROR_ON[CONFIG_USBD_GS_USB_MAX_CHANNELS],
+             USB_T_ACTIVITY_RX[CONFIG_USBD_GS_USB_MAX_CHANNELS],
+             USB_T_ACTIVITY_TX[CONFIG_USBD_GS_USB_MAX_CHANNELS];
 
-    static int64_t last_reset_time = 0;
-    last_reset_time = k_uptime_get();
     while (1) 
 	{
-        if (k_msgq_get(&CAN_ERR_MSGQ, &err_channel, K_FOREVER) != 0) 
-            continue;
-
-        LOG_ERR("CAN error on channel %u", err_channel);
-
-        int64_t now_time = k_uptime_get();
-        if ((now_time - last_reset_time) < 1000)
-            continue;
-        else
+        for(uint8_t i = 0; i < CONFIG_USBD_GS_USB_MAX_CHANNELS;i++)
         {
-            int err;
-            err = can_stop(can_channels[err_channel]);
-            if (err != 0 && err != -EALREADY)
-            {
-                LOG_ERR("CH%u can_stop failed (%d)", err_channel, err);
-                k_sleep(K_MSEC(50));
-                continue;
-            }
-            err = can_start(can_channels[err_channel]);
+            if( USB_T_ACTIVITY_RX[i] == USB_CHANNEL_ACTIVITY_RX[i] && 
+                USB_T_ACTIVITY_TX[i] == USB_CHANNEL_ACTIVITY_TX[i])
+                LOG_INF("CAN Channel[%d] is not working!",i);
 
-            if (err != 0) 
-            {
-                LOG_ERR("CH%u can_start failed (%d)", err_channel, err);
-                continue;
-            }
-            else 
-                LOG_INF("CH%u CAN re-initialized", err_channel);
-            k_sleep(K_MSEC(100));
+            USB_T_STARTED[i] = atomic_clear(&USB_CHANNEL_STARTED[i]);
+            USB_T_ERROR_OFF[i] = atomic_clear(&USB_CHANNEL_ERROR_OFF[i]);
+            USB_T_ERROR_ON[i] = atomic_clear(&USB_CHANNEL_ERROR_ON[i]);
+            USB_T_ACTIVITY_RX[i] = atomic_clear(&USB_CHANNEL_ACTIVITY_RX[i]);
+            USB_T_ACTIVITY_TX[i] = atomic_clear(&USB_CHANNEL_ACTIVITY_TX[i]);
+
         }
-        last_reset_time = now_time;
+        k_sleep(K_SECONDS(5));
+        
     }
 }

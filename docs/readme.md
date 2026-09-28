@@ -61,8 +61,15 @@ ip -d -s link show can0 can1
 8. 上位机重新枚举CAN设备
 ```bash
 # 详情见USB_RESET.py。
-python3 ${workspaceFolder}/USB_RESET.py
+# 正确参考：reset 1d50:606f bus ...
+python3 USB_RESET.py
 ```
+
+9. 连接RTT（只需接上烧录器）
+```bash
+west rtt --runner pyocd
+```
+
 9. 上传git
 git add -A
 git commit -m "2026.9.26"

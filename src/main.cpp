@@ -8,10 +8,15 @@
 
 LOG_MODULE_REGISTER(main, LOG_LEVEL_INF);
 
-K_THREAD_DEFINE(RTT_tid, 4096,
-				RTT_thread, 
+K_THREAD_DEFINE(RTT_TX_tid, 4096,
+				RTT_TX_thread, 
 				NULL, NULL, NULL,
 				7, 0, 0);
+
+K_THREAD_DEFINE(RTT_RX_tid, 4096,
+				RTT_RX_thread,
+				NULL, NULL, NULL,
+				6, 0, 0);
 
 // K_THREAD_DEFINE(CAN2_tid, 2048,
 // 				CAN2_thread, 
@@ -28,24 +33,14 @@ K_THREAD_DEFINE(USB_CAN_Err_tid, 1024,
 				NULL, NULL, NULL, 
 				2, 0, 0);
 
-
+struct usbd_context *usb_main_get(void) {return &usbd;}
 int main_err = 0;
 
 int main(void)
 {
 	#ifdef CONFIG_USB_DEVICE_STACK_NEXT
-	const struct device *gs_usb_dev = DEVICE_DT_GET(DT_NODELABEL(gs_usb0));
-	const struct device *can_local = DEVICE_DT_GET(DT_NODELABEL(can_loopback0));
-	const struct device *can_2 = DEVICE_DT_GET(DT_NODELABEL(fdcan2));
-	static struct gs_usb_ops ops;
+	
     ops.event = gs_usb_event_handler;
-
-
-	// const struct device *channels[] =
-	// {
-	// 	DEVICE_DT_GET(DT_NODELABEL(can_loopback0)),
-    //     DEVICE_DT_GET(DT_NODELABEL(fdcan2)),
-    // };
     
 	main_err = can_channels_validate(can_channels);
 	if (main_err != 0) 
@@ -162,7 +157,6 @@ int main(void)
 			return main_err;
 		}
 	#endif
-
 
 	return 0;
 }

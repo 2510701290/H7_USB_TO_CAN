@@ -151,3 +151,4 @@ gs_usb_request_identify();
 gs_usb_can_state_change_callback();
 gs_usb_rx_thread();
 ```
+
