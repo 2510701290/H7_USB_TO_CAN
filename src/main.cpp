@@ -28,10 +28,10 @@ K_THREAD_DEFINE(CAN_loopback_tid, 2048,
 				NULL, NULL, NULL, 
 				5, 0, 0);
 
-K_THREAD_DEFINE(USB_CAN_Err_tid, 1024,
-				USB_CAN_ERR_thread, 
-				NULL, NULL, NULL, 
-				2, 0, 0);
+// K_THREAD_DEFINE(USB_CAN_Err_tid, 1024,
+// 				USB_CAN_ERR_thread, 
+// 				NULL, NULL, NULL, 
+// 				2, 0, 0);
 
 struct usbd_context *usb_main_get(void) {return &usbd;}
 int main_err = 0;

@@ -20,3 +20,5 @@ external
 .cache/
 __pycache__/
 *.py[cod]
+# 大体积测试日志不进仓库
+docs/CS_*.txt

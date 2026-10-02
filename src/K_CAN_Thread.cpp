@@ -1,5 +1,7 @@
 #include <K_CAN_Thread.h>
 #include <zephyr/logging/log.h>
+#include <M_S_Control.h>
+#include "RM_CAN.h"
 LOG_MODULE_REGISTER(can_thread, LOG_LEVEL_INF);
 
 struct can_frame CAN_Communicate_Frame =
@@ -27,17 +29,11 @@ void CAN2_thread(void *p1, void *p2, void *p3)
 
     while (1) 
 	{
-        
-        if(can_get_state(can, &state, NULL) == 0 && state != CAN_STATE_STOPPED)
-        {
-            ret = can_send(can, &T_Frame, K_MSEC(100), NULL, NULL);
-            if (ret != 0) 
-                LOG_ERR("can_send err %d", ret);
-        }
-        else
-            LOG_INF("state: %d", state);
-        T_Frame.data[0]++;
-        k_sleep(K_MSEC(500));
+        // if (M_State == false)
+        // {
+        //     Send_RM(can, 0x010, 0, 0, 0, 0);
+        // }
+        k_sleep(K_MSEC(1));
     }
 }
 

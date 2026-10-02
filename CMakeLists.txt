@@ -15,6 +15,7 @@ target_sources(app PRIVATE
     src/K_CAN_Thread.cpp
     src/K_USB_CAN_ERR_Thread.cpp
     src/RM_CAN.cpp
+    src/M_S_Control.cpp
 )
 
 target_include_directories(app PRIVATE

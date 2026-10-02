@@ -25,9 +25,10 @@ void USB_CAN_ERR_thread(void *p1, void *p2, void *p3)
 	{
         for(uint8_t i = 0; i < CONFIG_USBD_GS_USB_MAX_CHANNELS;i++)
         {
-            if( USB_T_ACTIVITY_RX[i] == USB_CHANNEL_ACTIVITY_RX[i] && 
-                USB_T_ACTIVITY_TX[i] == USB_CHANNEL_ACTIVITY_TX[i])
-                LOG_INF("CAN Channel[%d] is not working!",i);
+            //有误，待优化
+            // if( USB_T_ACTIVITY_RX[i] == USB_CHANNEL_ACTIVITY_RX[i] && 
+            //     USB_T_ACTIVITY_TX[i] == USB_CHANNEL_ACTIVITY_TX[i])
+            //     LOG_INF("CAN Channel[%d] is not working!",i);
 
             USB_T_STARTED[i] = atomic_clear(&USB_CHANNEL_STARTED[i]);
             USB_T_ERROR_OFF[i] = atomic_clear(&USB_CHANNEL_ERROR_OFF[i]);

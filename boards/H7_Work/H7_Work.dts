@@ -41,7 +41,7 @@
 
 	rtt_region: memory@2404e000 {
 		compatible = "zephyr,memory-region", "mmio-sram";
-		reg = <0x2404e000 DT_SIZE_K(8)>;  /* 0x4E000 + 0x2000 = 0x50000 ✓ 正好到 AXI SRAM 末尾 */
+		reg = <0x2404e000 DT_SIZE_K(8)>;
 		zephyr,memory-region = "RTT_NOCACHE";
 		zephyr,memory-attr = <DT_MEM_ARM_MPU_RAM_NOCACHE>;
 	};
@@ -60,43 +60,53 @@
 
 &pll {
 	clocks = <&clk_hse>;
-	div-m = <1>; // 8 MHz to PLL（VCO）
-	mul-n = <60>;
-	div-p = <1>; // 480 MHz to RCC
-	div-q = <10>; // 48 MHz to USB
-	div-r = <2>; // 240 MHz to UART234578
+	div-m = <4>;   // 2 MHz to PLL（VCO）
+	mul-n = <270>; // 540MHz
+	div-p = <1>;   // 540MHz to SYS
+	div-q = <60>;  // 90 MHz
+	div-r = <30>;  // 180MHz to UART234578
 	fracn = <0>;
 	status = "okay";
 };
 
 &pll2 {
 	clocks = <&clk_hse>;
-	div-m = <1>; // 8 MHz to PLL2（VCO）
-	mul-n = <25>;
-	div-p = <2>; // 100 MHz
-	div-q = <2>; // 100 MHz to FDCAN
-	div-r = <2>; // 100 MHz
+	div-m = <1>;  // 8   MHz to PLL2（VCO）
+	mul-n = <25>; // 200 MHz
+	div-p = <2>;  // 100 MHz
+	div-q = <2>;  // 100 MHz to FDCAN
+	div-r = <2>;  // 100 MHz
 	fracn = <0>;
 	status = "okay";
 };
 
 &rcc {
 	clocks = <&pll>;
-	clock-frequency = <DT_FREQ_M(480)>;     /* 480 MHz SCLK*/
-	d1cpre = <1>;                           /* 480 MHz CPU Clocks*/
-	hpre = <2>;								/* 240 MHz */
-	d1ppre = <2>;							/* 120 MHz APB3 Peripheral Clock */
-	d2ppre1 = <2>;							/* 120 MHz APB1 Peripheral Clock */
-	d2ppre2 = <2>;							/* 120 MHz APB2 Peripheral Clock */
-	d3ppre = <2>;							/* 120 MHz APB4 Peripheral Clock */
-	timpre;									/* Timer Clock Prescaler */
+	clock-frequency = <DT_FREQ_M(540)>;     /* 540 MHz SCLK*/
+	d1cpre = <1>;                           /* 540 MHz CPU Clocks*/
+	hpre = <4>;				/* 135 MHz */
+	d1ppre = <1>;				/* 135 MHz APB3 Peripheral Clock */
+	d2ppre1 = <1>;				/* 135 MHz APB1 Peripheral Clock */
+	d2ppre2 = <1>;				/* 135 MHz APB2 Peripheral Clock */
+	d3ppre = <1>;				/* 135 MHz APB4 Peripheral Clock */
+	timpre;					/* Timer Clock Prescaler */
+};
+
+&clk_hsi48 {
+	status = "okay";
 };
 
 zephyr_udc0: &usbotg_hs {
 	pinctrl-0 = <&usb_otg_hs_dm_pa11 &usb_otg_hs_dp_pa12>;
 	pinctrl-names = "default";
+	/*           otghs   ep1_out ep1_in  */
+	interrupts = <77 0>, <74 0>, <75 0>;
+	num-bidir-endpoints = <9>;
+	phys = <&otghs_fs_phy>;
+	maximum-speed = "full-speed";
+	ram-size = <DT_SIZE_K(4)>;
 	clocks = <&rcc STM32_CLOCK(AHB1, 25)>,
-		 <&rcc STM32_SRC_PLL1_Q USB_SEL(1)>;
+		 <&rcc STM32_SRC_HSI48 USB_SEL(3)>;
 	status = "okay";
 };
 
@@ -105,7 +115,7 @@ zephyr_udc0: &usbotg_hs {
 	pinctrl-names = "default";
 	clocks = <&rcc STM32_CLOCK(APB1_2, 8)>,
 		 <&rcc STM32_SRC_PLL2_Q FDCAN_SEL(2)>;
-	/*            "int0" "int1"  "calib" */
+	/*             int0   int1    calib  */
 	interrupts = <20 0>, <22 0>, <63 0>;
 	bosch,mram-cfg = <0x350 28 8 6 0 0 3 3>;
 	status = "okay";

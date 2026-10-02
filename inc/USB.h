@@ -26,9 +26,16 @@ extern const struct device *can_channels[CAN_CHANNELS_NUM];
 
 /* ============ 2. BOS 能力：USB2.0 Extension(LPM) ============ */
 static const struct usb_bos_capability_lpm bos_cap_lpm = {
-    .bLength = sizeof(struct usb_bos_capability_lpm),
-    .bDescriptorType = USB_DESC_DEVICE_CAPABILITY,
-    .bDevCapabilityType = USB_BOS_CAPABILITY_EXTENSION,
+    .bLength = sizeof(struct usb_bos_capability_lpm),   //字节数
+    .bDescriptorType = USB_DESC_DEVICE_CAPABILITY,      //Device Capability 描述符
+    .bDevCapabilityType = USB_BOS_CAPABILITY_EXTENSION, //USB2.0拓展，如果windows免驱可能要更改
+    // bit0：必须为0
+    // bit1：支持LPM             =0为不支持
+    // bit2：BESL有效            =0不提供BESL参数
+    // bit3：baseline BESL有效   =0为不支持
+    // bits4–7：为baseline BESL值（单位µs）
+    // bit8：deep BESL 数值有效
+    // bits：Deep BESL value值（单位µs）
     .bmAttributes = 0UL,
 };
 

@@ -1,7 +1,12 @@
 # 安装环境
 ```bash
+# 终端显示
 sudo apt install python3-pip python3-tk
 pip install pyusb
+```
+```bash
+# 终端控制
+pip install python-can
 ```
 
 # 上位机命令
@@ -73,7 +78,7 @@ west rtt --runner pyocd
 9. 上传git
 ```bash
 git add -A
-git commit -m "2026.9.28_2"
+git commit -m "2026.10.2"
 git push
 ```
 
@@ -100,3 +105,7 @@ git push
   }
 ]
 ```
+
+# 纯上位机基础要求(建议)
+- flash > 256
+- ram > 156
