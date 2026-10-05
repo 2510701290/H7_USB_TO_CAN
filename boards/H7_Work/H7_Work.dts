@@ -61,10 +61,10 @@
 &pll {
 	clocks = <&clk_hse>;
 	div-m = <4>;   // 2 MHz to PLL（VCO）
-	mul-n = <270>; // 540MHz
-	div-p = <1>;   // 540MHz to SYS
-	div-q = <60>;  // 90 MHz
-	div-r = <30>;  // 180MHz to UART234578
+	mul-n = <260>; // 520MHz
+	div-p = <1>;   // 520MHz to SYS
+	div-q = <13>;   // 20 MHz
+	div-r = <13>;   // 20MHz to UART234578
 	fracn = <0>;
 	status = "okay";
 };
@@ -82,13 +82,13 @@
 
 &rcc {
 	clocks = <&pll>;
-	clock-frequency = <DT_FREQ_M(540)>;     /* 540 MHz SCLK*/
-	d1cpre = <1>;                           /* 540 MHz CPU Clocks*/
-	hpre = <4>;				/* 135 MHz */
-	d1ppre = <1>;				/* 135 MHz APB3 Peripheral Clock */
-	d2ppre1 = <1>;				/* 135 MHz APB1 Peripheral Clock */
-	d2ppre2 = <1>;				/* 135 MHz APB2 Peripheral Clock */
-	d3ppre = <1>;				/* 135 MHz APB4 Peripheral Clock */
+	clock-frequency = <DT_FREQ_M(520)>;     /* 520 MHz SCLK*/
+	d1cpre = <1>;                           /* 520 MHz CPU Clocks*/
+	hpre = <4>;				/* 130 MHz */
+	d1ppre = <1>;				/* 130 MHz APB3 Peripheral Clock */
+	d2ppre1 = <1>;				/* 130 MHz APB1 Peripheral Clock */
+	d2ppre2 = <1>;				/* 130 MHz APB2 Peripheral Clock */
+	d3ppre = <1>;				/* 130 MHz APB4 Peripheral Clock */
 	timpre;					/* Timer Clock Prescaler */
 };
 

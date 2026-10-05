@@ -22,3 +22,5 @@ __pycache__/
 *.py[cod]
 # 大体积测试日志不进仓库
 docs/CS_*.txt
+# AI 调试草稿不进仓库
+.dsh_cs

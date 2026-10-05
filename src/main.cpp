@@ -13,6 +13,7 @@ K_THREAD_DEFINE(RTT_TX_tid, 4096,
 				NULL, NULL, NULL,
 				7, 0, 0);
 
+				
 K_THREAD_DEFINE(RTT_RX_tid, 4096,
 				RTT_RX_thread,
 				NULL, NULL, NULL,

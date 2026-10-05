@@ -67,7 +67,7 @@ ip -d -s link show can0 can1
 ```bash
 # 详情见USB_RESET.py。
 # 正确参考：reset 1d50:606f bus ...
-python3 USB_RESET.py
+python3 userpy/USB_RESET.py
 ```
 
 9. 连接RTT（只需接上烧录器）

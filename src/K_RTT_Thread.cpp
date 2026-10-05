@@ -48,10 +48,10 @@ void RTT_TX_thread(void *p1, void *p2, void *p3)
 		// report_stack_usage();
         if (k_msgq_get(&rm_can2_q, data, K_FOREVER) == 0)
         {
+            Send_RM(DEVICE_DT_GET(DT_NODELABEL(fdcan2)), 0x010, 0, 0, 0, 0);
             LOG_INF("%X %X %X %X %X %X %X %X",
                     data[0], data[1], data[2], data[3],
                     data[4], data[5], data[6], data[7]);
-            Send_RM(DEVICE_DT_GET(DT_NODELABEL(fdcan2)), 0x010, 0, 0, 0, 0);
         }
         
         // LOG_INF("RTT_TX_thread running %d", n++);
@@ -86,7 +86,7 @@ void RTT_RX_thread(void *p1, void *p2, void *p3)
                              ARRAY_SIZE(can_channels),
                              &ops,
                              DEVICE_DT_GET( DT_NODELABEL(fdcan2)));
-                    M_State = false;
+                    M_State = true;
                     break;
                 default:break;
             }
