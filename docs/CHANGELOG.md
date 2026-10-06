@@ -49,3 +49,12 @@
 - 发现了540MHz数据可能出现问题
 ### Changed
 - 改变主频为520MHz
+
+## 2026.10.6
+### Added
+- 新增了Linux的GCANTOOL数据分析文件./userpy/CS_CAN_Linux.py
+- 新增了can_host的上位机收一发一上位机控制，实际回帧平均可以控制在250ms左右，峰值也能控制在700ms左右，算是证明无下位机是完全可行的方案。
+### Fixed
+- 无
+### Changed
+- 无

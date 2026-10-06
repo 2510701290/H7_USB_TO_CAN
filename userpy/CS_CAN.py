@@ -2,7 +2,7 @@ from collections import Counter
 from statistics import mean, median, pstdev, stdev
 from pathlib import Path
 
-path = Path("/home/hjq/Zephyr_text/H7_Work/docs/CS_M_2026_10_2.txt")
+path = Path("/home/hjq/Zephyr_text/H7_Work/docs/CS_M_2026_10_6.txt")
 
 if not path.exists():
     print(f"文件不存在: {path}")

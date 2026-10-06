@@ -78,7 +78,7 @@ west rtt --runner pyocd
 9. 上传git
 ```bash
 git add -A
-git commit -m "2026.10.2"
+git commit -m "2026.10.6"
 git push
 ```
 
