@@ -1,10 +1,12 @@
 #include <zephyr/kernel.h>
 #include <zephyr/logging/log.h>
 
-#include <USB.h>
+#include <Basic_USB.h>
 
 #include <K_RTT_Thread.h>
 #include <K_CAN_Thread.h>
+
+#include <M_S_Control.h>
 
 LOG_MODULE_REGISTER(main, LOG_LEVEL_INF);
 
@@ -39,6 +41,8 @@ int main_err = 0;
 
 int main(void)
 {
+	LOG_INF("Begin Work");
+
 	#ifdef CONFIG_USB_DEVICE_STACK_NEXT
 	
     ops.event = gs_usb_event_handler;

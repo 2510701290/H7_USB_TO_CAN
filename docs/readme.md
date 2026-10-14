@@ -4,9 +4,16 @@
 sudo apt install python3-pip python3-tk
 pip install pyusb
 ```
+
 ```bash
 # 终端控制
 pip install python-can
+```
+
+```bash
+# 可能需要，按理来说是不需要的
+pip install pylink-square
+pip install pyocd
 ```
 
 # 上位机命令
@@ -70,22 +77,32 @@ ip -d -s link show can0 can1
 python3 userpy/USB_RESET.py
 ```
 
-9. 连接RTT（只需接上烧录器）
+9. 连接RTT（需接上对应烧录器）
 ```bash
+# pyocd（dap）
 west rtt --runner pyocd
+# SEGGER (Jlink)
+west rtt --tool-opt="-jlinkscriptfile /home/hjq/Zephyr_text/H7_Work/rtt_range.JLinkScript"
 ```
 
-9. 上传git
+10. 上传git
 ```bash
 git add -A
 git commit -m "2026.10.6"
 git push
 ```
 
+
 # 可选开启vscode配置：
 ## 插件拓展推荐
 1. Devicetree LSP
 2. Zephyr IDE Extension Pack
+3. 我写的神秘插件,可以将vscode视图下的变量加入到ozone
+```md
+- Ctrl+Shift+P(显示并运行命令)
+- Developer: Install Extension from Location
+- 打开./Z_SEGGER/ozone_watch
+```
 
 ## 任务快捷键
 ```json
@@ -99,9 +116,14 @@ git push
     "args": "west build (H7_Work)"
   },
   {
-    "key": "ctrl+shift+f",
+    "key": "ctrl+shift+s",
     "command": "workbench.action.tasks.runTask",
-    "args": "west flash + rtt (pyocd)"
+    "args": "west flash + rtt"
+  },
+  {
+    "key": "ctrl+shift+l",
+    "command": "workbench.action.tasks.runTask",
+    "args": "open ozone"
   }
 ]
 ```

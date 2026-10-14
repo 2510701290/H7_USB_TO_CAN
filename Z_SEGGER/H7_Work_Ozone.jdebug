@@ -1,0 +1,12 @@
+void OnProjectLoad (void) {
+  Project.SetDevice ("STM32H723VG");
+  Project.SetHostIF ("USB", "");
+  Project.SetTargetIF ("SWD");
+  Project.SetTIFSpeed ("10 MHz");
+  Project.SetOSPlugin ("ZephyrPlugin");
+  File.Open ("$(ProjectDir)/../build/zephyr/zephyr.elf");
+}
+
+void AfterProjectLoad (void) {
+  Window.Show ("Timeline");
+}

@@ -10,11 +10,12 @@ project(H7_Work)
 
 target_sources(app PRIVATE
     src/main.cpp
-    src/USB.cpp
+    src/Basic_USB.cpp
+    src/Basic_CAN.cpp
+    src/Extern_RM.cpp
     src/K_RTT_Thread.cpp
     src/K_CAN_Thread.cpp
     src/K_USB_CAN_ERR_Thread.cpp
-    src/RM_CAN.cpp
     src/M_S_Control.cpp
 )
 

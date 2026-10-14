@@ -1,0 +1,35 @@
+{
+  "name": "ozone-data-sampling",
+  "displayName": "Ozone Data Sampling 快捷添加",
+  "description": "把选中的变量加到 Ozone 的 Data Sampling 窗口（走 19200 自动化 socket）",
+  "version": "0.1.0",
+  "publisher": "local",
+  "engines": { "vscode": "^1.74.0" },
+  "main": "./extension.js",
+  "activationEvents": ["onCommand:ozone-data-sampling.addSelection"],
+  "contributes": {
+    "commands": [
+      {
+        "command": "ozone-data-sampling.addSelection",
+        "title": "添加到 Ozone Data Sampling",
+        "category": "Ozone"
+      }
+    ],
+    "menus": {
+      "editor/context": [
+        {
+          "command": "ozone-data-sampling.addSelection",
+          "when": "editorHasSelection",
+          "group": "navigation@20"
+        }
+      ]
+    },
+    "keybindings": [
+      {
+        "command": "ozone-data-sampling.addSelection",
+        "key": "shift+alt+w",
+        "when": "editorTextFocus && editorHasSelection"
+      }
+    ]
+  }
+}

@@ -2,7 +2,8 @@
 #include <zephyr/sys/atomic.h>
 #include <zephyr/sys/sys_io.h>
 #include <zephyr/logging/log.h>
-#include "USB.h"
+#include "Basic_USB.h"
+#include "Basic_CAN.h"
 #include <zephyr/drivers/can.h>
 #include <zephyr/devicetree.h> 
 

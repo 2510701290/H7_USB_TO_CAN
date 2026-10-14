@@ -5,20 +5,39 @@
       "label": "west build (H7_Work)",
       "type": "shell",
       // 工程地址
-      "command": "west build -p always -b H7_Work ~/Zephyr_text/H7_Work",
+      "command": "west build -p always -b H7_Work ${workspaceFolder}/",
       "options": { "cwd": "${workspaceFolder}" },
       "group": { "kind": "none" },
       "problemMatcher": ["$gcc"]
     },
     {
-      "label": "west flash + rtt (pyocd)",
+      "label": "west flash + rtt",
       "type": "shell",
-      // "command": "west flash --runner pyocd && west rtt --runner pyocd",
-      "command": "west flash --runner pyocd --flash-opt=-Oresume_on_disconnect=true && python3 ${workspaceFolder}/userpy/USB_RESET.py && west rtt --runner pyocd",
+      // pyocd
+      // "command": "west flash --runner pyocd && python3 ${workspaceFolder}/userpy/USB_RESET.py && west rtt --runner pyocd",
+
+      // Jlink
+      "command": "west flash && python3 ${workspaceFolder}/userpy/USB_RESET.py && west rtt --tool-opt=\"-jlinkscriptfile ${workspaceFolder}/Z_SEGGER/rtt_range.JLinkScript\"",
+      
       "options": { "cwd": "${workspaceFolder}" },
       "isBackground": true,
       "problemMatcher": {
         "owner": "west-rtt",
+        "pattern": { "regexp": "^$" },
+        "background": { "activeOnStart": true, "beginsPattern": "a^", "endsPattern": "a^" }
+      },
+      "group": { "kind": "none"},
+      "presentation": { "reveal": "always", "panel": "dedicated", "clear": true }
+    },
+    {
+      "label": "open ozone",
+      "type": "shell",
+      "command": "ozone -project ${workspaceFolder}/Z_SEGGER/H7_Work_Ozone.jdebug",
+      
+      "options": { "cwd": "${workspaceFolder}" },
+      "isBackground": true,
+      "problemMatcher": {
+        "owner": "jlink vofa",
         "pattern": { "regexp": "^$" },
         "background": { "activeOnStart": true, "beginsPattern": "a^", "endsPattern": "a^" }
       },

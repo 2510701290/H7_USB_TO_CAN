@@ -16,6 +16,8 @@ external
 .vscode/extensions.json
 .vscode/zephyr-ide.json
 
+Z_SEGGER/H7_Work_Ozone.jdebug.user
+
 # ---------- 其它生成物 ----------
 .cache/
 __pycache__/
