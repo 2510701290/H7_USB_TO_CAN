@@ -88,7 +88,7 @@ west rtt --tool-opt="-jlinkscriptfile /home/hjq/Zephyr_text/H7_Work/rtt_range.JL
 10. 上传git
 ```bash
 git add -A
-git commit -m "2026.10.6"
+git commit -m "2026.10.14"
 git push
 ```
 
