@@ -82,7 +82,7 @@ python3 userpy/USB_RESET.py
 # pyocd（dap）
 west rtt --runner pyocd
 # SEGGER (Jlink)
-west rtt --tool-opt="-jlinkscriptfile /home/hjq/Zephyr_text/H7_Work/rtt_range.JLinkScript"
+west rtt --tool-opt="-jlinkscriptfile ${workspaceFolder}/Z_SEGGER/rtt_range.JLinkScript"
 ```
 
 10. 上传git
