@@ -41,7 +41,7 @@ int main_err = 0;
 
 int main(void)
 {
-	LOG_INF("Begin Work");
+	LOG_INF("Begin Gimbal");
 
 	#ifdef CONFIG_USB_DEVICE_STACK_NEXT
 	
