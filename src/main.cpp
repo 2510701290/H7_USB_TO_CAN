@@ -36,132 +36,34 @@ K_THREAD_DEFINE(CAN_loopback_tid, 2048,
 // 				NULL, NULL, NULL, 
 // 				2, 0, 0);
 
-struct usbd_context *usb_main_get(void) {return &usbd;}
+/*
+ * usbd 上下文由 src/Basic_USB.cpp 唯一定义，
+ * 需要指针时统一用 usb_main_get()（声明在 Basic_USB.h）。
+ */
 int main_err = 0;
 
 int main(void)
 {
 	LOG_INF("Begin Work");
 
-	#ifdef CONFIG_USB_DEVICE_STACK_NEXT
-	
-    ops.event = gs_usb_event_handler;
-    
-	main_err = can_channels_validate(can_channels);
-	if (main_err != 0) 
+#ifdef CONFIG_USB_DEVICE_STACK_NEXT
+	/* gs_usb 注册 + 全部描述符/配置/类注册 + usbd_init() + usbd_enable()
+	 * 都在 Basic_USB.cpp 里完成，保证 usbd 只有唯一一份实例。 */
+	main_err = Basic_USB_Init();
+	if (main_err != 0)
 	{
-		LOG_ERR("can_channels_validate failed (err %d)", main_err);
+		LOG_ERR("Basic_USB_Init failed (err %d)", main_err);
 		return main_err;
 	}
-
-	main_err = gs_usb_register(gs_usb_dev, can_channels, ARRAY_SIZE(can_channels), &ops, NULL);
-	if (main_err != 0) 
+#else
+	/* Old USB stack */
+	main_err = usb_enable(NULL);
+	if (main_err != 0)
 	{
-		LOG_ERR("failed to register gs_usb (err %d)", main_err);
+		LOG_ERR("failed to enable USB (err %d)", main_err);
 		return main_err;
 	}
-
-	if (!device_is_ready(gs_usb_dev)) 
-	{
-		LOG_ERR("gs_usb not ready");
-		return -ENODEV;
-	}
-
-	/* New USB stack initialization */
-	main_err = usbd_add_descriptor(&usbd, &lang);
-	if (main_err != 0) 
-	{
-		LOG_ERR("failed to add language descriptor (err %d)", main_err);
-		return main_err;
-	}
-
-	main_err = usbd_add_descriptor(&usbd, &mfr);
-	if (main_err != 0) 
-	{
-		LOG_ERR("failed to add manufacturer descriptor (err %d)", main_err);
-		return main_err;
-	}
-
-	main_err = usbd_add_descriptor(&usbd, &product);
-	if (main_err != 0) 
-	{
-		LOG_ERR("failed to add product descriptor (err %d)", main_err);
-		return main_err;
-	}
-
-	main_err = usbd_add_descriptor(&usbd, &sn);
-	if (main_err != 0) 
-	{
-		LOG_ERR("failed to add serial number descriptor (err %d)", main_err);
-		return main_err;
-	}
-
-	main_err = usbd_add_configuration(&usbd, USBD_SPEED_FS, &fs_config);
-	if (main_err != 0) 
-	{
-		LOG_ERR("failed to add full-speed configuration (err %d)", main_err);
-		return main_err;
-	}
-
-	main_err = usbd_register_class(&usbd, "gs_usb_0", USBD_SPEED_FS, 1);
-	if (main_err != 0) 
-	{
-		LOG_ERR("failed to register gs_usb class (err %d)", main_err);
-		return main_err;
-	}
-
-	main_err = usbd_device_set_code_triple(&usbd, USBD_SPEED_FS, 0, 0, 0);
-	if (main_err != 0) 
-	{
-		LOG_ERR("failed to set code triple (err %d)", main_err);
-		return main_err;
-	}
-
-	/* Set USB version to 2.0.1 to trigger BOS descriptor read (required for WinUSB) */
-	main_err = usbd_device_set_bcd_usb(&usbd, USBD_SPEED_FS, USB_SRN_2_0_1);
-	if (main_err != 0) 
-	{
-		LOG_ERR("failed to set FS bcdUSB (err %d)", main_err);
-		return main_err;
-	}
-
-	/* Set device version */
-	main_err = usbd_device_set_bcd_device(&usbd, APP_VERSION_BCD);
-	if (main_err != 0) 
-	{
-		LOG_ERR("failed to set bcdDevice (err %d)", main_err);
-		return main_err;
-	}
-
-	main_err = usbd_add_descriptor(&usbd, &bos_lpm);
-	if (main_err != 0) 
-	{
-		LOG_ERR("failed to add BOS LPM descriptor (err %d)", main_err);
-		return main_err;
-	}
-
-	main_err = usbd_init(&usbd);
-	if (main_err != 0) 
-	{
-		LOG_ERR("failed to initialize USB device (err %d)", main_err);
-		return main_err;
-	}
-
-	main_err = usbd_enable(&usbd);
-	if (main_err != 0) 
-	{
-		LOG_ERR("failed to enable USB device (err %d)", main_err);
-		return main_err;
-	}
-	#else
-		/* Old USB stack */
-		main_err = usb_enable(NULL);
-		if (main_err != 0) 
-		{
-			LOG_ERR("failed to enable USB (err %d)", main_err);
-			return main_err;
-		}
-	#endif
+#endif
 
 	return 0;
 }

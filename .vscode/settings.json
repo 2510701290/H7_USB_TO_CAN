@@ -1,7 +1,15 @@
 {
     "terminal.integrated.defaultProfile.linux": "Zephyr IDE Terminal",
+
+    // ---- 语言服务：只用 cpptools，关掉 ST 的 clangd ----
+    // STM32Cube clangd 用 clang 前端解析 Zephyr SDK 的 GCC 头文件，
+    // 会在 arm_acle.h 里报一堆 '__builtin_arm_*' 未定义（编译其实是好的）。
+    "stm32cube-ide-clangd.enable": false,
+
     "C_Cpp.default.compileCommands": "${workspaceFolder}/build/compile_commands.json",
-    "C_Cpp.default.compilerPath": "${env:ZEPHYR_SDK_INSTALL_DIR}/gnu/arm-zephyr-eabi/bin/arm-zephyr-eabi-gcc",
+    // 用绝对路径：${env:ZEPHYR_SDK_INSTALL_DIR} 在扩展宿主环境里不一定存在，
+    // 展开失败会让 IntelliSense 退回系统 x86 gcc，同样解析不了 ARM 头文件。
+    "C_Cpp.default.compilerPath": "/home/hjq/Env/zephyr-sdk-1.0.1/gnu/arm-zephyr-eabi/bin/arm-zephyr-eabi-gcc",
     "C_Cpp.default.cStandard": "c11",
     "cmake.configureOnOpen": false,
     "cmake.buildDirectory": "${workspaceFolder}/build",
