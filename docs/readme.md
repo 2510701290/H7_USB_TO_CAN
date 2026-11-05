@@ -85,13 +85,38 @@ west rtt --runner pyocd
 west rtt --tool-opt="-jlinkscriptfile ${workspaceFolder}/Z_SEGGER/rtt_range.JLinkScript"
 ```
 
-10. 上传git
+10. git
 ```bash
+# 上传
 git add -A
 git commit -m "2026.10.14"
 git push
 ```
 
+```bash
+# 分支克隆
+git clone -b git分支 --single-branch git网址 保存的文件夹
+# 举例
+git clone -b 10-Engineer-gimbal/2026.10.14 --single-branch \
+  https://github.com/2510701290/H7_USB_TO_CAN.git H7_gimbal
+```
+
+```bash
+# 本地 + 远程分支
+git branch -a
+# 切换到已有分支
+git switch dev
+# 创建并切换到新分支
+git switch -c feature
+```
+
+11. west.yml的使用
+```bash
+# 初始化workspace
+west init -m west.yml
+# 拉取/更新依赖
+west update
+```
 
 # 可选开启vscode配置：
 ## 插件拓展推荐
