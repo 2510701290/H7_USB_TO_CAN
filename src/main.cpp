@@ -21,10 +21,10 @@ K_THREAD_DEFINE(RTT_RX_tid, 4096,
 				NULL, NULL, NULL,
 				6, 0, 0);
 
-// K_THREAD_DEFINE(CAN2_tid, 2048,
-// 				CAN2_thread, 
-// 				NULL, NULL, NULL, 
-// 				5, 0, 0);
+K_THREAD_DEFINE(CAN2_tid, 2048,
+				CAN2_thread, 
+				NULL, NULL, NULL, 
+				1, 0, SYS_FOREVER_MS);
 
 K_THREAD_DEFINE(CAN_loopback_tid, 2048,
 				CAN_loopback_thread, 
@@ -38,7 +38,7 @@ K_THREAD_DEFINE(CAN_loopback_tid, 2048,
 
 struct usbd_context *usb_main_get(void) {return &usbd;}
 int main_err = 0;
-
+static bool can2_started;
 int main(void)
 {
 	LOG_INF("Begin Gimbal");
@@ -162,6 +162,13 @@ int main(void)
 			return main_err;
 		}
 	#endif
+
+	M_S_Control.C_M_TO_S(usb_main_get());
+	if (!can2_started) 
+	{
+		can2_started = true;
+		k_thread_start(CAN2_tid);
+	}
 
 	return 0;
 }

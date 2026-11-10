@@ -72,10 +72,10 @@
 &pll2 {
 	clocks = <&clk_hse>;
 	div-m = <1>;  // 8   MHz to PLL2（VCO）
-	mul-n = <25>; // 200 MHz
-	div-p = <2>;  // 100 MHz
-	div-q = <2>;  // 100 MHz to FDCAN
-	div-r = <2>;  // 100 MHz
+	mul-n = <30>; // 240 MHz
+	div-p = <3>;  // 80 MHz
+	div-q = <3>;  // 80 MHz to FDCAN
+	div-r = <2>;  // 120 MHz
 	fracn = <0>;
 	status = "okay";
 };

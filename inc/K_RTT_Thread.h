@@ -6,7 +6,8 @@
 #include <zephyr/sys/sys_io.h>
 #include <SEGGER_RTT.h>
 extern int RTT_LOG_INFO;
-
+extern uint32_t CAN_RX_Num;
+extern uint32_t CAN_TX_Num;
 void RTT_TX_thread(void *p1, void *p2, void *p3);
 void RTT_RX_thread(void *p1, void *p2, void *p3);
 

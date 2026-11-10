@@ -6,11 +6,14 @@
 
 #include "Basic_USB.h"
 #include "Basic_CAN.h"
+#include <K_CAN_Thread.h>
 
 #include "Extern_RM.h"
 
 #include "M_S_Control.h"
 
+uint32_t CAN_RX_Num = 0;
+uint32_t CAN_TX_Num = 0;
 LOG_MODULE_REGISTER(rtt_thread, LOG_LEVEL_INF);
 
 int RTT_LOG_INFO = 0;
@@ -56,18 +59,17 @@ void RTT_TX_thread(void *p1, void *p2, void *p3)
 		// report_stack_usage();
 
         // CAN报文上报
-        if(M_S_Control.Get_S_State(K_FOREVER) == true)
-        {
-            if (k_msgq_get(&basic_can2_q, data, K_FOREVER) == 0)
-            {
-                Send_RM(DEVICE_DT_GET(DT_NODELABEL(fdcan2)), 0x010, 0, 0, 0, 0);
-                LOG_INF("%X, %X, %X, %X, %X, %X, %X, %X",
-                        data[0], data[1], data[2], data[3],
-                        data[4], data[5], data[6], data[7]);
-            }
-            else k_sleep(K_MSEC(1));
-        }
-        else k_sleep(K_MSEC(1));
+        // if(M_S_Control.Get_S_State(K_FOREVER) == true)
+        // {
+        //     if (k_msgq_get(&basic_can2_q, data, K_FOREVER) == 0)
+        //     {
+        //         // LOG_INF("%X, %X, %X, %X, %X, %X, %X, %X, %X",
+        //         //         data[0], data[1], data[2], data[3],
+        //         //         data[4], data[5], data[6], data[7]);
+        //     }
+        //     else k_sleep(K_MSEC(1));
+        // }
+        // else k_sleep(K_MSEC(1));
 
     }
 }
@@ -84,8 +86,14 @@ void RTT_RX_thread(void *p1, void *p2, void *p3)
             switch(RTT_RX_BUF[0])
             {
                 case 'c':
-                    M_S_Control.C_M_TO_S(usb_main_get());
-                    break;
+                    {
+                        M_S_Control.C_M_TO_S(usb_main_get());
+                        // if (!can2_started) 
+                        // {
+                        //     can2_started = true;
+                        //     k_thread_start(CAN2_tid);
+                        // }
+                    }break;
 
                 /*注意！下位机虽然重新开启了端点，但上位机需要寻找USB才能重新通信*/
                 case 'a':

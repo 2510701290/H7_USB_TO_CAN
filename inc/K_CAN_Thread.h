@@ -5,6 +5,8 @@
 #include <zephyr/drivers/can.h>
 #include <zephyr/devicetree.h> 
 
+extern const k_tid_t CAN2_tid;
+
 void CAN2_thread(void *p1, void *p2, void *p3);
 void CAN_loopback_thread(void *p1, void *p2, void *p3);
 #endif
