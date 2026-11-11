@@ -11,6 +11,17 @@ K_MSGQ_DEFINE(basic_can1_q, 8,8,2);
 K_MSGQ_DEFINE(basic_can2_q, 8,8,2);
 K_MSGQ_DEFINE(basic_can3_q, 8,8,2);
 extern uint32_t CAN_RX_Num;
+__noinit volatile float torque;
+REQUIRES(torque);
+
+float uint_to_float(int x_int, float x_min, float x_max, int bits)
+{
+    /// converts unsigned int to float, given range and number of bits ///
+    float span = x_max - x_min;
+    float offset = x_min;
+    return ((float)x_int) * span / ((float)((1 << bits) - 1)) + offset;
+}
+
 __attribute__((weak)) void CAN_LB_RX_Cplt(const struct device *dev, 
                                         struct can_frame *frame,
                                         void *user_data)
@@ -25,7 +36,6 @@ __attribute__((weak)) void CAN1_RX_Cplt(const struct device *dev,
 {
     k_msgq_purge(&basic_can1_q);
     CAN_Get_Frame(frame->data,basic_can1_q);
-    CAN_RX_Num++;
 }
 
 __attribute__((weak)) void CAN2_RX_Cplt(const struct device *dev, 
@@ -34,6 +44,13 @@ __attribute__((weak)) void CAN2_RX_Cplt(const struct device *dev,
 {
     k_msgq_purge(&basic_can2_q);
     CAN_Get_Frame(frame->data,basic_can2_q);
+    CAN_RX_Num++;
+    if(frame->id == 0x13)
+    {
+        int t_int = ((frame->data[4] & 0xF) << 8) | frame->data[5];
+        torque = uint_to_float(t_int,-28.0f,28.0f,12);
+    }
+    
 }
 
 __attribute__((weak)) void CAN3_RX_Cplt(const struct device *dev, 
@@ -78,7 +95,8 @@ int Basic_CAN_Start(const struct device *can,
 
         if (can_mod & CAN_MODE_FD)
         {
-            if(can_set_bitrate(can, 1000000) & can_set_bitrate_data(can, bitrate) != 0)
+            if( ( can_set_bitrate(can, 1000000) 
+                & can_set_bitrate_data(can, bitrate) ) != 0)
                 return -5;
         }
         else

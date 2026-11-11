@@ -1,4 +1,5 @@
 void OnProjectLoad (void) {
+  Edit.SysVar (VAR_HSS_SPEED, FREQ_2_KHZ);
   Project.SetDevice ("STM32H723VG");
   Project.SetHostIF ("USB", "");
   Project.SetTargetIF ("SWD");
