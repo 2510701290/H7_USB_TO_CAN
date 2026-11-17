@@ -56,8 +56,9 @@ atomic_t USB_CHANNEL_STARTED[CONFIG_USBD_GS_USB_MAX_CHANNELS] = {0},
 
 const struct device *can_channels[CONFIG_USBD_GS_USB_MAX_CHANNELS] =
 {
+    DEVICE_DT_GET(DT_NODELABEL(fdcan1)),
     DEVICE_DT_GET(DT_NODELABEL(can_loopback0)),
-    DEVICE_DT_GET(DT_NODELABEL(fdcan2)),
+    DEVICE_DT_GET(DT_NODELABEL(fdcan3)),
 };
 
 const struct device *gs_usb_dev = DEVICE_DT_GET(DT_NODELABEL(gs_usb0));

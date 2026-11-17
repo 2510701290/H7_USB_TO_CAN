@@ -15,7 +15,7 @@
 	chosen {
 		zephyr,sram = &sram0;
 		zephyr,flash = &flash0;
-		zephyr,canbus2 = &fdcan2;
+		zephyr,canbus2 = &fdcan1;
 		zephyr,canbus3 = &fdcan3;
 	};
 
@@ -23,9 +23,14 @@
 		compatible = "cannectivity";
 		timestamp-counter = <&counters2>;
 
-		channel0 {
+		channel1 {
 			compatible = "cannectivity-channel";
-			can-controller = <&fdcan2>;
+			can-controller = <&fdcan1>;
+		};
+
+		channel3 {
+			compatible = "cannectivity-channel";
+			can-controller = <&fdcan3>;
 		};
 	};
 
@@ -44,6 +49,11 @@
 		reg = <0x2404e000 DT_SIZE_K(8)>;
 		zephyr,memory-region = "RTT_NOCACHE";
 		zephyr,memory-attr = <DT_MEM_ARM_MPU_RAM_NOCACHE>;
+	};
+
+	usb_phy0: usb-phy-ulpi {
+		compatible = "usb-ulpi-phy";
+		#phy-cells = <0>;
 	};
 };
 
@@ -97,27 +107,42 @@
 };
 
 zephyr_udc0: &usbotg_hs {
-	pinctrl-0 = <&usb_otg_hs_dm_pa11 &usb_otg_hs_dp_pa12>;
+	pinctrl-0 = <&usb_otg_hs_ulpi_d0_pa3
+		     &usb_otg_hs_ulpi_d1_pb0
+		     &usb_otg_hs_ulpi_d2_pb1
+		     &usb_otg_hs_ulpi_d3_pb10
+		     &usb_otg_hs_ulpi_d4_pb11
+		     &usb_otg_hs_ulpi_d5_pb12
+		     &usb_otg_hs_ulpi_d6_pb13
+		     &usb_otg_hs_ulpi_d7_pb5
+		     &usb_otg_hs_ulpi_ck_pa5
+		     &usb_otg_hs_ulpi_stp_pc0
+		     &usb_otg_hs_ulpi_dir_pc2_c
+		     &usb_otg_hs_ulpi_nxt_pc3_c>;
 	pinctrl-names = "default";
-	/*           otghs   ep1_out ep1_in  */
 	interrupts = <77 0>, <74 0>, <75 0>;
 	num-bidir-endpoints = <9>;
-	phys = <&otghs_fs_phy>;
-	maximum-speed = "full-speed";
+	phys = <&usb_phy0>;
+	maximum-speed = "high-speed";
 	ram-size = <DT_SIZE_K(4)>;
 	clocks = <&rcc STM32_CLOCK(AHB1, 25)>,
 		 <&rcc STM32_SRC_HSI48 USB_SEL(3)>;
 	status = "okay";
 };
 
-&fdcan2 {
-	pinctrl-0 = <&fdcan2_rx_pb12 &fdcan2_tx_pb13>;
+&fdcan1 {
+	pinctrl-0 = <&fdcan1_rx_pd0 &fdcan1_tx_pd1>;
 	pinctrl-names = "default";
 	clocks = <&rcc STM32_CLOCK(APB1_2, 8)>,
 		 <&rcc STM32_SRC_PLL2_Q FDCAN_SEL(2)>;
-	/*             int0   int1    calib  */
-	interrupts = <20 0>, <22 0>, <63 0>;
-	bosch,mram-cfg = <0x350 28 8 6 0 0 3 3>;
+	status = "okay";
+};
+
+&fdcan3 {
+	pinctrl-0 = <&fdcan3_rx_pd12 &fdcan3_tx_pd13>;
+	pinctrl-names = "default";
+	clocks = <&rcc STM32_CLOCK(APB1_2, 8)>,
+		 <&rcc STM32_SRC_PLL2_Q FDCAN_SEL(2)>;
 	status = "okay";
 };
 
