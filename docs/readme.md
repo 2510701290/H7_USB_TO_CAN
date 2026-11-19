@@ -89,7 +89,7 @@ west rtt --tool-opt="-jlinkscriptfile ${workspaceFolder}/Z_SEGGER/rtt_range.JLin
 ```bash
 # 上传
 git add -A
-git commit -m "2026.10.14"
+git commit -m "2026.11.20"
 git push
 ```
 
