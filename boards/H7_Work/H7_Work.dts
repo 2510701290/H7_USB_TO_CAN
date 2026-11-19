@@ -120,7 +120,7 @@ zephyr_udc0: &usbotg_hs {
 		     &usb_otg_hs_ulpi_dir_pc2_c
 		     &usb_otg_hs_ulpi_nxt_pc3_c>;
 	pinctrl-names = "default";
-	interrupts = <77 0>, <74 0>, <75 0>;
+	interrupts = <74 0>, <75 0>, <76 0>, <77 0>;
 	num-bidir-endpoints = <9>;
 	phys = <&usb_phy0>;
 	maximum-speed = "full-speed";
