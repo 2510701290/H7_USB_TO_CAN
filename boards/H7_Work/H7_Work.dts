@@ -123,9 +123,16 @@ zephyr_udc0: &usbotg_hs {
 	interrupts = <77 0>, <74 0>, <75 0>;
 	num-bidir-endpoints = <9>;
 	phys = <&usb_phy0>;
-	maximum-speed = "high-speed";
+	maximum-speed = "full-speed";
 	ram-size = <DT_SIZE_K(4)>;
-	clocks = <&rcc STM32_CLOCK(AHB1, 25)>,
+	/*
+	 * ULPI 模式必须同时打开两个时钟门控：
+	 *   bit25 USB1OTGHSEN         OTG_HS 内核时钟
+	 *   bit26 USB1OTGHSULPIEN     ULPI 接口时钟（缺了 PHY 完全无法访问）
+	 * 官方 ULPI 参考板（h747i_disco / h757i_eval / portenta_h7）
+	 * 全部使用 STM32_CLOCK_BUS_AHB1 0x06000000。
+	 */
+	clocks = <&rcc STM32_CLOCK_BUS_AHB1 0x06000000>,
 		 <&rcc STM32_SRC_HSI48 USB_SEL(3)>;
 	status = "okay";
 };

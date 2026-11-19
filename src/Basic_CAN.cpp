@@ -80,8 +80,10 @@ int Basic_CAN_Start(const struct device *can,
 
         if (can_mod & CAN_MODE_FD)
         {
-            if( ( can_set_bitrate(can, 1000000) 
-                & can_set_bitrate_data(can, bitrate) ) != 0)
+            /* 分开判断：用按位与会把“一个失败、一个成功”误判成成功 */
+            if (can_set_bitrate(can, 1000000) != 0)
+                return -5;
+            if (can_set_bitrate_data(can, bitrate) != 0)
                 return -5;
         }
         else

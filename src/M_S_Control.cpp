@@ -11,17 +11,17 @@ LOG_MODULE_REGISTER(M_S_Control, LOG_LEVEL_INF);
 
 static bool E_CAN_State_tab[CONFIG_USBD_GS_USB_MAX_CHANNELS] = { false, false, false };
 
+/* 索引 0 = fdcan1(真实)   1 = can_loopback0(虚拟)   2 = fdcan3(真实) */
 static const uint16_t can_mod_tab[CONFIG_USBD_GS_USB_MAX_CHANNELS] = {
-    CAN_MODE_LOOPBACK, CAN_MODE_NORMAL | CAN_MODE_FD, CAN_MODE_NORMAL | CAN_MODE_FD };
+    CAN_MODE_NORMAL | CAN_MODE_FD, CAN_MODE_LOOPBACK, CAN_MODE_NORMAL | CAN_MODE_FD };
 
 static const can_rx_callback_t cplt_tab[CONFIG_USBD_GS_USB_MAX_CHANNELS] = {
-    CAN_LB_RX_Cplt, CAN1_RX_Cplt, CAN3_RX_Cplt };
+    CAN1_RX_Cplt, CAN_LB_RX_Cplt, CAN3_RX_Cplt };
 
 static const struct can_filter *const fil_tab[CONFIG_USBD_GS_USB_MAX_CHANNELS] = {
-    &BASIC_CANLB_Fil, &BASIC_CAN2_Fil, &BASIC_CAN3_Fil };
+    &BASIC_CAN1_Fil, &BASIC_CANLB_Fil, &BASIC_CAN3_Fil };
 
-static const uint32_t br_tab[CONFIG_USBD_GS_USB_MAX_CHANNELS] = { 1000000, 5000000, 5000000 };
-
+static const uint32_t br_tab[CONFIG_USBD_GS_USB_MAX_CHANNELS] = { 5000000, 1000000, 5000000 };
 /* M_S_Control类的实例化，
    传入参数 ：             CAN通道状态         CAN模式   CAN接收回调函数  CAN设备   CAN过滤器  CAN波特率 */
 _M_S_Control M_S_Control(E_CAN_State_tab, can_mod_tab, cplt_tab, can_channels, fil_tab, br_tab);
@@ -104,7 +104,8 @@ int _M_S_Control::C_S_TO_M( struct usbd_context *const uds_ctx,
         else
             LOG_INF("gs_usb_register ok");
         err = usbd_enable(uds_ctx);
-        if(err != 0 && err != -ENOMSG)
+        /* usbd_enable() 在“已使能”时返回 -EALREADY，应视为成功，而不是 -ENOMSG */
+        if(err != 0 && err != -EALREADY)
         {
             LOG_ERR("usbd_enable err = %d",err);
             k_sem_give(&this->sem);

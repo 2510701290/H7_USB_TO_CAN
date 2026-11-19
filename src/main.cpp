@@ -1,5 +1,6 @@
 #include <zephyr/kernel.h>
 #include <zephyr/logging/log.h>
+#include <soc.h>
 
 #include <Basic_USB.h>
 
@@ -36,163 +37,72 @@ K_THREAD_DEFINE(CAN_loopback_tid, 2048,
 // 				NULL, NULL, NULL, 
 // 				2, 0, 0);
 
-struct usbd_context *usb_main_get(void) {return &usbd;}
 int main_err = 0;
 static bool can2_started;
+
+/* ------------------------------------------------------------------
+ * 复位探针：__noinit 变量不被启动代码清零，可跨复位累加。
+ * 若 boot # 一直在涨，就说明板子在反复复位（枚举失败的头号原因）。
+ * ------------------------------------------------------------------ */
+static __noinit uint32_t boot_cnt;
+
+static void log_reset_cause(void)
+{
+	uint32_t rsr = RCC->RSR;
+
+	boot_cnt++;
+	LOG_WRN("boot #%u  RCC->RSR=0x%08x", boot_cnt, rsr);
+
+#ifdef RCC_RSR_BORRSTF
+	if (rsr & RCC_RSR_BORRSTF)  { LOG_WRN("  -> brown-out (BOR) reset"); }
+#endif
+#ifdef RCC_RSR_PORRSTF
+	if (rsr & RCC_RSR_PORRSTF)  { LOG_WRN("  -> power-on (POR) reset"); }
+#endif
+#ifdef RCC_RSR_PINRSTF
+	if (rsr & RCC_RSR_PINRSTF)  { LOG_WRN("  -> NRST pin reset"); }
+#endif
+#ifdef RCC_RSR_SFTRSTF
+	if (rsr & RCC_RSR_SFTRSTF)  { LOG_WRN("  -> software reset"); }
+#endif
+#ifdef RCC_RSR_IWDGRSTF
+	if (rsr & RCC_RSR_IWDGRSTF) { LOG_WRN("  -> IWDG reset"); }
+#endif
+#ifdef RCC_RSR_WWDGRSTF
+	if (rsr & RCC_RSR_WWDGRSTF) { LOG_WRN("  -> WWDG reset"); }
+#endif
+#ifdef RCC_RSR_LPWRRSTF
+	if (rsr & RCC_RSR_LPWRRSTF) { LOG_WRN("  -> low-power reset"); }
+#endif
+
+	/* 清标志，下次读到的才是新的复位原因 */
+#if defined(RCC_RSR_RMVF)
+	RCC->RSR |= RCC_RSR_RMVF;
+#elif defined(RCC_RSR_RMVF_Msk)
+	RCC->RSR |= RCC_RSR_RMVF_Msk;
+#endif
+}
+
 int main(void)
 {
+	log_reset_cause();
 	LOG_INF("Begin Gimbal");
 
-	#ifdef CONFIG_USB_DEVICE_STACK_NEXT
+	main_err = usb_device_setup();
+	if (main_err != 0)
+	{
+		LOG_ERR("usb_device_setup failed (err %d)", main_err);
+		return main_err;
+	}
+
+	/* 调试 USB 时保持 USB 模式（C_M_TO_S() 会 usbd_disable()）
+	 * 正常模式把下面两段的注释去掉 */
+	// M_S_Control.C_M_TO_S(usb_main_get());
+	// if (!can2_started) 
+	// {
+	// 	can2_started = true;
+	// 	k_thread_start(CAN2_tid);
+	// }
 	
-    ops.event = gs_usb_event_handler;
-    
-	main_err = can_channels_validate(can_channels);
-	if (main_err != 0) 
-	{
-		LOG_ERR("can_channels_validate failed (err %d)", main_err);
-		return main_err;
-	}
-
-	main_err = gs_usb_register(gs_usb_dev, can_channels, ARRAY_SIZE(can_channels), &ops, NULL);
-	if (main_err != 0) 
-	{
-		LOG_ERR("failed to register gs_usb (err %d)", main_err);
-		return main_err;
-	}
-
-	if (!device_is_ready(gs_usb_dev)) 
-	{
-		LOG_ERR("gs_usb not ready");
-		return -ENODEV;
-	}
-
-	main_err = usbd_add_configuration(&usbd, USBD_SPEED_HS, &hs_config);
-    if (main_err != 0) {
-        LOG_ERR("failed to add high-speed configuration (err %d)", main_err);
-        return main_err;
-    }
-
-    main_err = usbd_register_class(&usbd, "gs_usb_0", USBD_SPEED_HS, 1);
-    if (main_err != 0) {
-        LOG_ERR("failed to register gs_usb class (HS) (err %d)", main_err);
-        return main_err;
-    }
-
-    main_err = usbd_device_set_code_triple(&usbd, USBD_SPEED_HS, 0, 0, 0);
-    if (main_err != 0) {
-        LOG_ERR("failed to set code triple (HS) (err %d)", main_err);
-        return main_err;
-    }
-
-    main_err = usbd_device_set_bcd_usb(&usbd, USBD_SPEED_HS, USB_SRN_2_0_1);
-    if (main_err != 0) {
-        LOG_ERR("failed to set HS bcdUSB (err %d)", main_err);
-        return main_err;
-    }
-
-	/* New USB stack initialization */
-	main_err = usbd_add_descriptor(&usbd, &lang);
-	if (main_err != 0) 
-	{
-		LOG_ERR("failed to add language descriptor (err %d)", main_err);
-		return main_err;
-	}
-
-	main_err = usbd_add_descriptor(&usbd, &mfr);
-	if (main_err != 0) 
-	{
-		LOG_ERR("failed to add manufacturer descriptor (err %d)", main_err);
-		return main_err;
-	}
-
-	main_err = usbd_add_descriptor(&usbd, &product);
-	if (main_err != 0) 
-	{
-		LOG_ERR("failed to add product descriptor (err %d)", main_err);
-		return main_err;
-	}
-
-	main_err = usbd_add_descriptor(&usbd, &sn);
-	if (main_err != 0) 
-	{
-		LOG_ERR("failed to add serial number descriptor (err %d)", main_err);
-		return main_err;
-	}
-
-	main_err = usbd_add_configuration(&usbd, USBD_SPEED_FS, &fs_config);
-	if (main_err != 0) 
-	{
-		LOG_ERR("failed to add full-speed configuration (err %d)", main_err);
-		return main_err;
-	}
-
-	main_err = usbd_register_class(&usbd, "gs_usb_0", USBD_SPEED_FS, 1);
-	if (main_err != 0) 
-	{
-		LOG_ERR("failed to register gs_usb class (err %d)", main_err);
-		return main_err;
-	}
-
-	main_err = usbd_device_set_code_triple(&usbd, USBD_SPEED_FS, 0, 0, 0);
-	if (main_err != 0) 
-	{
-		LOG_ERR("failed to set code triple (err %d)", main_err);
-		return main_err;
-	}
-
-	/* Set USB version to 2.0.1 to trigger BOS descriptor read (required for WinUSB) */
-	main_err = usbd_device_set_bcd_usb(&usbd, USBD_SPEED_FS, USB_SRN_2_0_1);
-	if (main_err != 0) 
-	{
-		LOG_ERR("failed to set FS bcdUSB (err %d)", main_err);
-		return main_err;
-	}
-
-	/* Set device version */
-	main_err = usbd_device_set_bcd_device(&usbd, APP_VERSION_BCD);
-	if (main_err != 0) 
-	{
-		LOG_ERR("failed to set bcdDevice (err %d)", main_err);
-		return main_err;
-	}
-
-	main_err = usbd_add_descriptor(&usbd, &bos_lpm);
-	if (main_err != 0) 
-	{
-		LOG_ERR("failed to add BOS LPM descriptor (err %d)", main_err);
-		return main_err;
-	}
-
-	main_err = usbd_init(&usbd);
-	if (main_err != 0) 
-	{
-		LOG_ERR("failed to initialize USB device (err %d)", main_err);
-		return main_err;
-	}
-
-	main_err = usbd_enable(&usbd);
-	if (main_err != 0) 
-	{
-		LOG_ERR("failed to enable USB device (err %d)", main_err);
-		return main_err;
-	}
-	#else
-		/* Old USB stack */
-		main_err = usb_enable(NULL);
-		if (main_err != 0) 
-		{
-			LOG_ERR("failed to enable USB (err %d)", main_err);
-			return main_err;
-		}
-	#endif
-
-	M_S_Control.C_M_TO_S(usb_main_get());
-	if (!can2_started) 
-	{
-		can2_started = true;
-		k_thread_start(CAN2_tid);
-	}
-
 	return 0;
 }
