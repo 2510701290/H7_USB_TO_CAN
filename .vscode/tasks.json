@@ -13,7 +13,10 @@
     {
       "label": "west flash + rtt",
       "type": "shell",
-      // pyocd
+      // west flash + uid(pyocd list可以查到id)
+      // "command": "west flash --runner pyocd --dev-id <uid>",
+
+      // pyocd + USB_RESET.py + west rtt
       "command": "west flash --runner pyocd && python3 ${workspaceFolder}/userpy/USB_RESET.py && west rtt --runner pyocd",
 
       // Jlink

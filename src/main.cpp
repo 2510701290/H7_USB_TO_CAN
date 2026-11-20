@@ -38,7 +38,17 @@ K_THREAD_DEFINE(CAN_loopback_tid, 2048,
 // 				2, 0, 0);
 
 int main_err = 0;
+
+/* ------------------------------------------------------------------
+ * 运行模式（两种互斥：gs_usb 和 CAN2_thread 都要独占 fdcan1）
+ *   0 = USB 模式：gs_usb 三通道 CAN-FD，PC 用 socketcan 收发，云台控制环不跑
+ *   1 = 独立 CAN 模式：关掉 USB，启动 fdcan1 + 达妙电机控制环，脱离 PC 跑
+ * ------------------------------------------------------------------ */
+#define APP_STANDALONE_CAN_MODE  0
+
+#if APP_STANDALONE_CAN_MODE
 static bool can2_started;
+#endif
 
 /* ------------------------------------------------------------------
  * 复位探针：__noinit 变量不被启动代码清零，可跨复位累加。
@@ -95,14 +105,15 @@ int main(void)
 		return main_err;
 	}
 
-	/* 调试 USB 时保持 USB 模式（C_M_TO_S() 会 usbd_disable()）
-	 * 正常模式把下面两段的注释去掉 */
-	// M_S_Control.C_M_TO_S(usb_main_get());
-	// if (!can2_started) 
-	// {
-	// 	can2_started = true;
-	// 	k_thread_start(CAN2_tid);
-	// }
-	
+#if APP_STANDALONE_CAN_MODE
+	/* 独立 CAN 模式：先关 USB（gs_usb 与 CAN2_thread 争用 fdcan1），
+	 * 再启动三路 FDCAN，最后拉起达妙电机控制环。 */
+	M_S_Control.C_M_TO_S(usb_main_get());
+	if (!can2_started) {
+		can2_started = true;
+		k_thread_start(CAN2_tid);
+	}
+#endif
+
 	return 0;
 }

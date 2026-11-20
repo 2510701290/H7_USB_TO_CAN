@@ -8,6 +8,10 @@ twister-out*/
 *.map
 
 # ---------- west 工作区相关 ----------
+docs/原理图/
+docs/芯片文档/
+
+# ---------- 外部资料 ----------
 .venv/
 external
 
@@ -23,6 +27,10 @@ Z_SEGGER/H7_Work_Ozone.jdebug.user
 __pycache__/
 *.py[cod]
 # 大体积测试日志不进仓库
-docs/CS_*.txt
+docs/CAN_ANALYSIS/CS_*.txt
 # AI 调试草稿不进仓库
 .dsh_cs
+
+# ---------- 临时备份 ----------
+# 改动前的原文件备份（如 Basic_USB.cpp.bak），只是本地回滚用，不进仓库
+.tmp/

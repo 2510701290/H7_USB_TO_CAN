@@ -156,3 +156,55 @@ west update
 # 纯上位机基础要求(建议)
 - flash > 256
 - ram > 156
+
+---
+
+# 文档索引
+
+## `docs/`
+| 文件 | 内容 |
+| --- | --- |
+| `readme.md` | 本文：环境安装、上位机命令、git 用法、vscode 配置速查 |
+| `NOTES.md` | 杂项笔记 |
+| `CHANGELOG.md` | 变更记录 |
+
+## `docs/USB_DOCS/`
+| 文件 | 内容 |
+| --- | --- |
+| `USB_DEBUG_POSTMORTEM.md` | **USB 枚举失败复盘 + 排查手册 + 协作约定**（要先看） |
+| `Basic_USB_Attention.md` | **`src/Basic_USB.cpp` 全部注意事项**（源码已零注释，改代码前必读） |
+| `HS_USB_ULPI_BRINGUP.md` | USB3300 ULPI 技术细节：三个根因、寄存器判据、引脚核对 |
+| `USB_NOTES.md` | USB 相关零散笔记 |
+
+## `docs/CAN_ANALYSIS/`
+| 文件 | 内容 |
+| --- | --- |
+| `CAN_ANALYSIS1/2/3.md` | CAN 通信抓包分析 |
+| `CS_*.txt` | 原始抓包日志（体积大，已 gitignore） |
+
+## `docs/原理图/`（已 gitignore）
+| 路径 | 内容 |
+| --- | --- |
+| `USB2.0高速测试板/` | Altium 工程（`.PrjPcb` / `.SchDoc` / `.PcbDoc`） |
+| `netlist3.py` | SchDoc 网表提取脚本 |
+
+```bash
+# 用法：从原理图里查某个网络接到哪些引脚
+python3 docs/原理图/netlist3.py "docs/原理图/USB2.0高速测试板/USB2.0高速测试板原理图.SchDoc" USB_DIR
+```
+
+> 网络名是 `USB_` 前缀：`USB_DIR` / `USB_NXT` / `USB_STP` / `USB_CLKOUT` / `USB_D0~D7` /
+> `USB_DP` / `USB_DN` / `USB_RST`。搜 `ULPI` 是查不到的。
+
+**典型输出：**
+
+```
+[USB_DIR]
+    U2-17(PC2_C)
+    U5-12(DIR)
+```
+
+## `docs/芯片文档/`（已 gitignore）
+| 文件 | 内容 |
+| --- | --- |
+| `C108383_..._USB3300-EZK-TR_规格书_*.PDF` | USB3300 数据手册（DS00001783C） |
