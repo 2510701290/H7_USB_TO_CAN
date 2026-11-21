@@ -12,6 +12,7 @@ target_sources(app PRIVATE
     src/main.cpp
     src/Basic_USB.cpp
     src/Basic_CAN.cpp
+    src/CS_CAN.cpp
     src/Extern_RM.cpp
     src/K_RTT_Thread.cpp
     src/K_CAN_Thread.cpp

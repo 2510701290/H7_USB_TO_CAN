@@ -3,6 +3,7 @@
 #include <soc.h>
 
 #include <Basic_USB.h>
+#include "CS_CAN.h"
 
 #include <K_RTT_Thread.h>
 #include <K_CAN_Thread.h>
@@ -104,6 +105,12 @@ int main(void)
 		LOG_ERR("usb_device_setup failed (err %d)", main_err);
 		return main_err;
 	}
+
+	// /* CAN 状态监听：bus-off / error-passive 直接打到 RTT，方便定位发送失败 */
+	// CS_CAN_Monitor_Init();
+
+	// /* CAN 丢包监测：每秒打印 RX FIFO 溢出 / 错误计数增量 / USB 收发帧数 */
+	// CS_CAN_Loss_Monitor_Start();
 
 #if APP_STANDALONE_CAN_MODE
 	/* 独立 CAN 模式：先关 USB（gs_usb 与 CAN2_thread 争用 fdcan1），

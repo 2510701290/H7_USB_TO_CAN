@@ -131,7 +131,12 @@ zephyr_udc0: &usbotg_hs {
 };
 
 &fdcan1 {
-	pinctrl-0 = <&fdcan1_rx_pd0 &fdcan1_tx_pd1>;
+	/* 本板(ULPI 高速板)原理图: FDCAN1_TX -> U2-71(PA12) -> U3(TXD)
+	 *                        FDCAN1_RX -> U2-70(PA11) -> U3(RXD)
+	 * PD0/PD1 在板上是悬空的，配成 PD0/PD1 会导致报文根本到不了收发器，
+	 * 控制器收不到 ACK -> bus-off -> can_send 返回 -ENETUNREACH(-114)
+	 */
+	pinctrl-0 = <&fdcan1_rx_pa11 &fdcan1_tx_pa12>;
 	pinctrl-names = "default";
 	clocks = <&rcc STM32_CLOCK(APB1_2, 8)>,
 		 <&rcc STM32_SRC_PLL2_Q FDCAN_SEL(2)>;

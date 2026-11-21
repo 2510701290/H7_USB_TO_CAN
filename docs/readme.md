@@ -208,3 +208,14 @@ python3 docs/原理图/netlist3.py "docs/原理图/USB2.0高速测试板/USB2.0�
 | 文件 | 内容 |
 | --- | --- |
 | `C108383_..._USB3300-EZK-TR_规格书_*.PDF` | USB3300 数据手册（DS00001783C） |
+
+
+## wifi设置
+nmcli device status                 # 各网卡状态、当前连的是哪个
+nmcli device wifi list              # 扫描 Wi-Fi(加 --rescan yes 强制重新扫描)
+nmcli connection show               # 已保存的网络配置
+
+切换已保存的wifi
+sudo nmcli connection up "Xiaomi 15 Pro"
+
+sudo nmcli connection up "Redmi_Turbo 3"

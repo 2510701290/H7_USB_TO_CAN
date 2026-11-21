@@ -16,20 +16,45 @@
     "cmake.configureArgs": ["-DBOARD=H7_Work"],
 
     "devicetree.defaultBindingType": "Zephyr",
+    // "devicetree.defaultIncludePaths": [
+    //     "./zephyr/dts",
+    //     "./zephyr/dts/common",
+    //     "./zephyr/dts/arm",
+    //     "./zephyr/dts/arm64",
+    //     "./zephyr/dts/riscv",
+    //     "./zephyr/dts/vendor",
+    //     "./zephyr/dts/xtensa",
+    //     "./zephyr/include",
+    //     "./modules/hal/stm32/dts"
+    // ],
+    // "devicetree.defaultZephyrBindings": [
+    //     "./zephyr/dts/bindings",
+    //     "./custom/cannectivity/dts/bindings"
+    // ],
     "devicetree.defaultIncludePaths": [
-        "./zephyr/dts",
-        "./zephyr/dts/common",
-        "./zephyr/dts/arm",
-        "./zephyr/dts/arm64",
-        "./zephyr/dts/riscv",
-        "./zephyr/dts/vendor",
-        "./zephyr/dts/xtensa",
-        "./zephyr/include",
-        "./modules/hal/stm32/dts"
+    "/home/rm/zephyrproject/zephyr/dts",
+    "/home/rm/zephyrproject/zephyr/dts/common",
+    "/home/rm/zephyrproject/zephyr/dts/arm",
+    "/home/rm/zephyrproject/zephyr/dts/arm64",
+    "/home/rm/zephyrproject/zephyr/dts/riscv",
+    "/home/rm/zephyrproject/zephyr/dts/vendor",
+    "/home/rm/zephyrproject/zephyr/dts/xtensa",
+    "/home/rm/zephyrproject/zephyr/include",
+    "/home/rm/zephyrproject/modules/hal/stm32/dts"
     ],
-    "devicetree.defaultZephyrBindings": [
-        "./zephyr/dts/bindings",
-        "./custom/cannectivity/dts/bindings"
-    ],
+"devicetree.defaultZephyrBindings": [
+    "/home/rm/zephyrproject/zephyr/dts/bindings",
+    "/home/rm/zephyrproject/custom/cannectivity/dts/bindings",
+    "/home/rm/zephyrproject/custom/cannectivity/app/dts/bindings"
+],
+"terminal.integrated.automationProfile.linux": {
+  "path": "/usr/bin/bash",
+  "env": {
+    "PATH": "/home/rm/zephyrproject/.venv/bin:${env:PATH}",
+    "ZEPHYR_BASE": "/home/rm/zephyrproject/zephyr",
+    "ZEPHYR_SDK_INSTALL_DIR": "/home/rm/zephyr-sdk-1.0.1"
+  }
+},
+
     "zephyr-ide.toolchainDirectory": "/home/rm/zephyr-sdk-1.0.1"
 }
